@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 from keras.models import load_model
+from streamlit_option_menu import option_menu
 
 # Custom CSS to improve styling
 # Dark mode CSS styling
@@ -11,24 +12,41 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #1e1e1e;  /* Dark background */
-        color: #ffffff;  /* Light text color */
+        background-color: #1e1e1e;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
     }
     h1, h2, h3, h4, h5, h6 {
         color: #ffcc00;  /* Gold color for headers */
+        margin-bottom: 16px;
     }
-    .stButton {
-        background-color: #ffcc00;  /* Gold button color */
-        color: #1e1e1e;  /* Dark text color on buttons */
+    .stApp {
+        padding-top: 30px;  /* Adequate padding to space the content */
     }
-    .stLineChart {
-        background-color: #1e1e1e;  /* Chart background */
-        color: #ffffff;  /* Chart text color */
+    .css-1d391kg { /* Adjust font size of sidebar menu */
+        font-size: 18px;
+    }
+    .css-15tx938 { /* Customize the sidebar width */
+        width: 260px;
+    }
+    .css-17eq0hr a {  /* Link customization */
+        color: #ffcc00 !important;  /* Links in the sidebar */
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+
+# Navbar with buttons for About and Contact Us
+# st.markdown(
+#     """
+#     <div class="navbar">
+#         <button onclick="window.location.href = '#about';">About</button>
+#         <button onclick="window.location.href = '#contact';">Contact Us</button>
+#     </div>
+#     """,
+#     unsafe_allow_html=True
+# )
 
 # Function to load and preprocess data (for Vanilla LSTM, for example)
 def load_and_preprocess_data():
@@ -129,6 +147,61 @@ def contact_page():
         - **Address:** 123 Machine Learning Street, Data City, AI Country
     """)
 
+# Page 1: OSLR Model
+def oslr_model():
+    st.title("OSLR Model")
+    st.write("Description of OSLR model here.")
+    st.line_chart([1, 2, 3, 4])  # Dummy chart
+
+# Page 2: Stacked LSTM Model
+def stacked_lstm_model():
+    st.title("Stacked LSTM Model")
+    st.write("Description of Stacked LSTM model here.")
+    
+    # Load data and model
+    brent_data, scaler = load_and_preprocess_data()
+    model = load_stacked_lstm_model()
+    
+    # Make predictions
+    predictions = make_predictions(model, brent_data['normalized_oil_prices'])
+    
+    # Date range input
+    st.write("Select Date Range:")
+    start_date = st.date_input("Start Date", value=pd.to_datetime("2010-01-01"))
+    end_date = st.date_input("End Date", value=pd.to_datetime("2023-01-01"))
+         
+    # Filter data based on date range
+    filtered_test_data = brent_data.loc[start_date:end_date]['normalized_oil_prices']
+    filtered_predictions = predictions[brent_data.index.get_indexer(filtered_test_data.index)]
+
+    # Plot the predictions vs actual values within the selected date range
+    plot_predictions(filtered_test_data, filtered_predictions, start_date, end_date)
+
+# Page 3: Bidirectional LSTM Model
+def bidirectional_lstm_model():
+    st.title("Bidirectional LSTM Model")
+    st.write("Description of Bidirectional LSTM model here.")
+    
+    # Load data and model
+    brent_data, scaler = load_and_preprocess_data()
+    model = load_bidirectional_lstm_model()
+    
+    # Make predictions
+    predictions = make_predictions(model, brent_data['normalized_oil_prices'])
+    
+    # Date range input
+    st.write("Select Date Range:")
+    start_date = st.date_input("Start Date", value=pd.to_datetime("2010-01-01"))
+    end_date = st.date_input("End Date", value=pd.to_datetime("2023-01-01"))
+    
+    # Filter data based on date range
+    filtered_test_data = brent_data.loc[start_date:end_date]['normalized_oil_prices']
+    filtered_predictions = predictions[brent_data.index.get_indexer(filtered_test_data.index)]
+
+    # Plot the predictions vs actual values within the selected date range
+    plot_predictions(filtered_test_data, filtered_predictions, start_date, end_date)
+
+
 # Page 4: Vanilla LSTM Model
 def vanilla_lstm_model():
     st.title("🤖 Vanilla LSTM Model")
@@ -163,28 +236,44 @@ def vanilla_lstm_model():
     # Plot the predictions vs actual values within the selected date range
     plot_predictions(filtered_test_data, filtered_predictions, start_date, end_date)
 
-# Streamlit tab navigation
+# Main function
 def main():
-    st.sidebar.title("🔍 Navigation")
-    option = st.sidebar.selectbox(
-        "Select Page",
-        ["Home", "OSLR", "Stacked LSTM", "Bidirectional LSTM", "Vanilla LSTM", "About", "Contact Us"]
-    )
+    # Sidebar for navigation
+    with st.sidebar:
+        st.title("🔍 Navigation")
 
-    if option == "Home":
+        # Combined navigation menu with custom styling
+        selected = option_menu(
+            menu_title="Menu",
+            options=["Home", "OSLR", "Stacked LSTM", "Bidirectional LSTM", "Vanilla LSTM", "About Us", "Contact Us"],
+            icons=["house", "bar-chart", "graph-up", "shuffle", "robot", "info-circle", "envelope"],
+            menu_icon="cast",
+            default_index=0,
+        )
+
+    # Render only the selected page
+    if selected == "Home":
         home_page()
-    elif option == "OSLR":
-        oslr_model()
-    elif option == "Stacked LSTM":
-        stacked_lstm_model()
-    elif option == "Bidirectional LSTM":
-        bidirectional_lstm_model()
-    elif option == "Vanilla LSTM":
-        vanilla_lstm_model()
-    elif option == "About":
+        st.success("You are now viewing the Home page.")
+    elif selected == "About Us":
         about_page()
-    elif option == "Contact Us":
+        st.success("You are now viewing the About Us page.")
+    elif selected == "Contact Us":
         contact_page()
+        st.success("You are now viewing the Contact Us page.")
+    elif selected == "OSLR":
+        oslr_model()
+        st.success("You are now viewing the OSLR model.")
+    elif selected == "Stacked LSTM":
+        stacked_lstm_model()
+        st.success("You are now viewing the Stacked LSTM model.")
+    elif selected == "Bidirectional LSTM":
+        bidirectional_lstm_model()
+        st.success("You are now viewing the Bidirectional LSTM model.")
+    elif selected == "Vanilla LSTM":
+        vanilla_lstm_model()
+        st.success("You are now viewing the Vanilla LSTM model.")
+
 
 if __name__ == "__main__":
     main()
