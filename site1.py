@@ -5,6 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 from keras.models import load_model
 
+
 # Custom CSS to improve styling
 # Dark mode CSS styling
 st.markdown(
