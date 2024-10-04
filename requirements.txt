@@ -6,3 +6,4 @@ matplotlib
 keras
 tensorflow
 xlrd
+streamlit-option-menu
