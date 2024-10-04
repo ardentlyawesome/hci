@@ -70,7 +70,7 @@ def load_and_preprocess_data():
 
 # Function to load Vanilla LSTM model
 def load_lstm_model():
-    model = load_model('C:/Users/aindr/OneDrive/Documents/Stuff/hci/vanilla.h5')  # Update path as needed
+    model = load_model('vanilla.h5')  # Update path as needed
     return model
 
 # Load Stacked LSTM Model
