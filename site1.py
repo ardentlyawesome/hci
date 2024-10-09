@@ -109,8 +109,10 @@ def plot_predictions(test_data, predictions, start_date, end_date):
 def home_page():
     st.title("📈 Oil Price Prediction Dashboard")
     st.write("""
-        Welcome to the **Oil Price Prediction Dashboard**! This application leverages various machine learning models to predict and analyze oil prices. 
-        Explore different models such as OSLR, Stacked LSTM, Bidirectional LSTM, and Vanilla LSTM to understand their performance and accuracy in forecasting oil prices.
+        Welcome to our LSTM Model Dashboard! This platform showcases different variations of Long Short-Term Memory (LSTM) models, including Vanilla LSTM, Bidirectional LSTM, our custom Online Stream LSTM Regression, and Stacked LSTM. 
+        Each model is designed to handle sequential data in unique ways, offering insights into different aspects of time-series prediction.
+        You can explore interactive plots for each model, comparing performance across different date ranges to suit your analysis needs. 
+        Simply select a model and adjust the date range to visualize its predictions in real time.
     """)
     
     # Load and preprocess the data
@@ -150,13 +152,19 @@ def contact_page():
 # Page 1: OSLR Model
 def oslr_model():
     st.title("OSLR Model")
-    st.write("Description of OSLR model here.")
+    st.write("""Our methodology focuses on improving crude oil price forecasting by leveraging Long Short-Term Memory (LSTM) networks combined with online learning. We use the Brent Crude Oil Price dataset (2010-2023) and split it into training and validation sets. 
+        Our core model is a standard LSTM that predicts future prices by analyzing past trends through a sliding window approach. To enhance this, we developed the Online Sequential LSTM Regression (OSLR) model, which updates continuously with new data, allowing it to capture evolving market patterns in real time. 
+        The OSLR model is evaluated using key metrics like Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and Directional Accuracy (DA), and consistently outperforms traditional LSTM models in terms of accuracy and error reduction.
+            """)
     st.line_chart([1, 2, 3, 4])  # Dummy chart
 
 # Page 2: Stacked LSTM Model
 def stacked_lstm_model():
     st.title("Stacked LSTM Model")
-    st.write("Description of Stacked LSTM model here.")
+    st.write("""A Stacked LSTM is a type of LSTM model that consists of multiple layers of LSTM cells stacked on top of each other. 
+        By adding more layers, the model can capture more complex patterns in the data, allowing it to learn hierarchical representations of the input sequence. 
+        This architecture is particularly useful for tasks requiring deep feature extraction, such as time-series forecasting or speech recognition, as it enables the model to process information at multiple levels of abstraction.
+    """)
     
     # Load data and model
     brent_data, scaler = load_and_preprocess_data()
@@ -180,7 +188,11 @@ def stacked_lstm_model():
 # Page 3: Bidirectional LSTM Model
 def bidirectional_lstm_model():
     st.title("Bidirectional LSTM Model")
-    st.write("Description of Bidirectional LSTM model here.")
+    st.write("""
+        A Bidirectional Long Short-Term Memory (BiLSTM) network extends the vanilla LSTM by processing data in both forward and backward directions. 
+        It uses two separate LSTMs: one for the input sequence and another for the reversed sequence. 
+        This allows the network to capture dependencies from both past and future context, improving performance in tasks like language modeling, speech recognition, and machine translation where full context is important.
+        """)
     
     # Load data and model
     brent_data, scaler = load_and_preprocess_data()
@@ -205,7 +217,11 @@ def bidirectional_lstm_model():
 # Page 4: Vanilla LSTM Model
 def vanilla_lstm_model():
     st.title("🤖 Vanilla LSTM Model")
-    st.write("Predictions and metrics for the Vanilla LSTM model.")
+    st.write("""
+        A vanilla Long Short-Term Memory (LSTM) network is a type of recurrent neural network (RNN) that captures long-term dependencies in sequential data, solving the vanishing gradient problem of traditional RNNs. 
+        It uses a memory cell and three gates—forget, input, and output—to control the flow of information over time. 
+        This allows LSTMs to retain important data over long sequences, making them useful for tasks like time-series forecasting and natural language processing.
+    """)
     
     # Load and preprocess the data
     brent_data, scaler = load_and_preprocess_data()
