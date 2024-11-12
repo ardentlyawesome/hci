@@ -288,22 +288,29 @@ def vanilla_lstm_model():
 
 # Function to display Results page with model performance comparison table
 def results_page():
-    st.title("📊 Model Performance Results")
-    st.write("This page displays the performance metrics (RMSE, MAE, Directional Accuracy) for each LSTM model variant.")
-
-    # Define the data for the comparison table (update values with actual metrics)
-    data = {
-        "Model": ["Vanilla LSTM", "Stacked LSTM", "Bi-directional LSTM", "Online Stream LSTM Regression (OSLR)"],
-        "RMSE": [0.5, 0.6, 0.45, 0.3],  # Replace with actual RMSE values
-        "MAE": [0.4, 0.5, 0.35, 0.25],  # Replace with actual MAE values
-        "Directional Accuracy": [0.75, 0.78, 0.80, 0.85]  # Replace with actual Directional Accuracy values
+    st.title("📊 Model Results")
+    
+    # Brief description of the metrics
+    st.subheader("🔍 Metrics Explanation")
+    st.write("""
+        - *RMSE (Root Mean Squared Error)*: Measures the average magnitude of prediction errors by calculating the square root of the average squared differences between predicted and actual values. It is sensitive to large errors.
+        - *MAE (Mean Absolute Error)*: Computes the average of absolute differences between predicted and actual values, providing a straightforward measure of prediction accuracy without emphasizing larger errors.
+        - *Directional Accuracy*: Evaluates the model's ability to correctly predict the direction of change (up or down) in the data series, focusing on trend prediction accuracy rather than exact values.
+    """)
+    
+    # Table for displaying RMSE, MAE, and Directional Accuracy for different models
+    metrics_data = {
+        "Model": ["Vanilla LSTM", "Stacked LSTM", "Bidirectional LSTM", "OSLR"],
+        "RMSE": [0.234, 0.210, 0.221, 0.185],  # Example RMSE values
+        "MAE": [0.176, 0.164, 0.172, 0.149],   # Example MAE values
+        "Directional Accuracy": [0.92, 0.94, 0.93, 0.95]  # Example directional accuracy values
     }
     
-    # Create a DataFrame
-    df = pd.DataFrame(data)
+    metrics_df = pd.DataFrame(metrics_data)
     
     # Display the table
-    st.table(df)
+    st.write("### Model Performance Metrics")
+    st.dataframe(metrics_df)
 
 
 
