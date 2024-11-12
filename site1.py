@@ -83,6 +83,10 @@ def load_bidirectional_lstm_model():
     model = load_model('bi_di_LSTM.h5')  # Update with the actual path to your Bidirectional LSTM model
     return model
 
+def load_oslr_model():
+    model = load_model('oslr.h5')  # Update with the actual path to your Bidirectional LSTM model
+    return model
+
 # Function to make predictions with Vanilla LSTM model
 def make_predictions(model, test_data):
     # Reshape the test data for predictions
@@ -156,7 +160,37 @@ def oslr_model():
         Our core model is a standard LSTM that predicts future prices by analyzing past trends through a sliding window approach. To enhance this, we developed the Online Sequential LSTM Regression (OSLR) model, which updates continuously with new data, allowing it to capture evolving market patterns in real time. 
         The OSLR model is evaluated using key metrics like Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and Directional Accuracy (DA), and consistently outperforms traditional LSTM models in terms of accuracy and error reduction.
             """)
-    st.line_chart([1, 2, 3, 4])  # Dummy chart
+    
+
+
+     # Load and preprocess the data
+    brent_data, scaler = load_and_preprocess_data()
+    
+    # Load 
+    model = load_oslr_model()
+    
+    # Make predictions
+    predictions = make_predictions(model, brent_data['normalized_oil_prices'])
+    
+    # Date range input
+    st.write("### Select Date Range:")
+    col1, col2 = st.columns(2)
+    with col1:
+        start_date = st.date_input("Start Date", value=pd.to_datetime("2010-01-01"))
+    with col2:
+        end_date = st.date_input("End Date", value=pd.to_datetime("2023-01-01"))
+    
+    # Validate date inputs
+    if start_date > end_date:
+        st.error("Error: Start Date must be before End Date.")
+        return
+    
+    # Filter data based on date range
+    filtered_test_data = brent_data.loc[start_date:end_date]['normalized_oil_prices']
+    filtered_predictions = predictions[brent_data.index.get_indexer(filtered_test_data.index)]
+    
+    # Plot the predictions vs actual values within the selected date range
+    plot_predictions(filtered_test_data, filtered_predictions, start_date, end_date)
 
 # Page 2: Stacked LSTM Model
 def stacked_lstm_model():
@@ -216,7 +250,7 @@ def bidirectional_lstm_model():
 
 # Page 4: Vanilla LSTM Model
 def vanilla_lstm_model():
-    st.title("🤖 Vanilla LSTM Model")
+    st.title("☁️ Vanilla LSTM Model")
     st.write("""
         A vanilla Long Short-Term Memory (LSTM) network is a type of recurrent neural network (RNN) that captures long-term dependencies in sequential data, solving the vanishing gradient problem of traditional RNNs. 
         It uses a memory cell and three gates—forget, input, and output—to control the flow of information over time. 
@@ -252,6 +286,27 @@ def vanilla_lstm_model():
     # Plot the predictions vs actual values within the selected date range
     plot_predictions(filtered_test_data, filtered_predictions, start_date, end_date)
 
+# Function to display Results page with model performance comparison table
+def results_page():
+    st.title("📊 Model Performance Results")
+    st.write("This page displays the performance metrics (RMSE, MAE, Directional Accuracy) for each LSTM model variant.")
+
+    # Define the data for the comparison table (update values with actual metrics)
+    data = {
+        "Model": ["Vanilla LSTM", "Stacked LSTM", "Bi-directional LSTM", "Online Stream LSTM Regression (OSLR)"],
+        "RMSE": [0.5, 0.6, 0.45, 0.3],  # Replace with actual RMSE values
+        "MAE": [0.4, 0.5, 0.35, 0.25],  # Replace with actual MAE values
+        "Directional Accuracy": [0.75, 0.78, 0.80, 0.85]  # Replace with actual Directional Accuracy values
+    }
+    
+    # Create a DataFrame
+    df = pd.DataFrame(data)
+    
+    # Display the table
+    st.table(df)
+
+
+
 # Main function
 def main():
     # Sidebar for navigation
@@ -261,8 +316,8 @@ def main():
         # Combined navigation menu with custom styling
         selected = option_menu(
             menu_title="Menu",
-            options=["Home", "OSLR", "Stacked LSTM", "Bidirectional LSTM", "Vanilla LSTM", "About Us", "Contact Us"],
-            icons=["house", "bar-chart", "graph-up", "shuffle", "robot", "info-circle", "envelope"],
+            options=["Home", "OSLR", "Stacked LSTM", "Bidirectional LSTM", "Vanilla LSTM", "Results", "About Us", "Contact Us"],
+            icons=["house", "bar-chart", "graph-up", "shuffle", "cloud", "clipboard-data", "info-circle", "envelope"],
             menu_icon="cast",
             default_index=0,
         )
@@ -289,6 +344,10 @@ def main():
     elif selected == "Vanilla LSTM":
         vanilla_lstm_model()
         st.success("You are now viewing the Vanilla LSTM model.")
+    elif selected == "Results":
+        results_page()
+        st.success("You are now viewing the Results page.")
+
 
 
 if __name__ == "__main__":
